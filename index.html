@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enquete dos Amigos</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Firebase SDKs - Compat version for older browsers support, but generally good -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 </head>
@@ -15,29 +16,291 @@
 
     <main>
         <section id="questions-section">
-            <h2>Quem é o mais ciumento?</h2>
-            <div class="options">
-                <button data-person="Ricardo">Ricardo</button>
-                <button data-person="Rafael">Rafael</button>
-                <button data-person="Fernando">Fernando</button>
-                <button data-person="Samana">Samana</button>
-                <button data-person="Mayara">Mayara</button>
+            <!-- Cada pergunta deve ser envolvida por uma div com a classe 'question-block' e um data-question para fácil identificação -->
+            
+            <div class="question-block" data-question="Quem é o mais engraçado?">
+                <h2>Quem é o mais engraçado?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
             </div>
-            <h2>Quem é o mais preguiçoso?</h2>
-            <div class="options">
-                <button data-person="Ricardo">Ricardo</button>
-                <button data-person="Rafael">Rafael</button>
-                <button data-person="Fernando">Fernando</button>
-                <button data-person="Samana">Samana</button>
-                <button data-person="Mayara">Mayara</button>
+            
+            <div class="question-block" data-question="Quem é o mais dorminhoco?">
+                <h2>Quem é o mais dorminhoco?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
             </div>
+
+            <div class="question-block" data-question="Quem tem mais chances de ser preso?">
+                <h2>Quem tem mais chances de ser preso?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais responsável?">
+                <h2>Quem é o mais responsável?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais organizado?">
+                <h2>Quem é o mais organizado?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais preguiçoso?">
+                <h2>Quem é o mais preguiçoso?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem sumiria sem dar sinal de vida?">
+                <h2>Quem sumiria sem dar sinal de vida?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais aventureiro?">
+                <h2>Quem é o mais aventureiro?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais palhaço?">
+                <h2>Quem é o mais palhaço?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais estressado?">
+                <h2>Quem é o mais estressado?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais comilão?">
+                <h2>Quem é o mais comilão?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais pontual?">
+                <h2>Quem é o mais pontual?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais topa tudo?">
+                <h2>Quem é o mais topa tudo?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais provável de chegar atrasado?">
+                <h2>Quem é o mais provável de chegar atrasado?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais conselheiro?">
+                <h2>Quem é o mais conselheiro?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais carinhoso?">
+                <h2>Quem é o mais carinhoso?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais 'pai/mãe' do grupo?">
+                <h2>Quem é o mais 'pai/mãe' do grupo?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais religioso?">
+                <h2>Quem é o mais religioso?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais sociável?">
+                <h2>Quem é o mais sociável?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais dramático?">
+                <h2>Quem é o mais dramático?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais fresco?">
+                <h2>Quem é o mais fresco?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais cancelável?">
+                <h2>Quem é o mais cancelável?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o mais provável de esquecer algo importante?">
+                <h2>Quem é o mais provável de esquecer algo importante?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
+            <div class="question-block" data-question="Quem é o que sempre tem uma história boa para contar?">
+                <h2>Quem é o que sempre tem uma história boa para contar?</h2>
+                <div class="options">
+                    <button data-person="Ricardo">Ricardo</button>
+                    <button data-person="Rafael">Rafael</button>
+                    <button data-person="Fernando">Fernando</button>
+                    <button data-person="Samana">Samana</button>
+                    <button data-person="Mayara">Mayara</button>
+                </div>
+            </div>
+
             <button id="submit-votes">Enviar Meus Votos</button>
+            <button id="show-results-btn" style="display: none;">Ver Resultados</button>
         </section>
 
         <section id="results-section" style="display: none;">
             <h2>Resultados da Enquete</h2>
+            <!-- Aqui os resultados serão injetados pelo JavaScript -->
             <div id="results-container"></div>
+            <button id="back-to-poll-btn">Voltar para a Enquete</button>
         </section>
+
+        <!-- Custom Alert/Message Box -->
+        <div id="custom-alert" class="custom-modal" style="display: none;">
+            <div class="custom-modal-content">
+                <span class="close-button">&times;</span>
+                <p id="custom-alert-message"></p>
+            </div>
+        </div>
+
     </main>
 
     <footer>
