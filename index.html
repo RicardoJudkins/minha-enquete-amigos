@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enquete dos Amigos</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Enquete dos Amigos!</h1>
+    </header>
+
+    <main>
+        <section id="questions-section">
+            <h2>Quem é o mais ciumento?</h2>
+            <div class="options">
+                <button data-person="Ricardo">Ricardo</button>
+                <button data-person="Rafael">Rafael</button>
+                <button data-person="Fernando">Fernando</button>
+                <button data-person="Samana">Samana</button>
+                <button data-person="Mayara">Mayara</button>
+            </div>
+            <h2>Quem é o mais preguiçoso?</h2>
+            <div class="options">
+                <button data-person="Ricardo">Ricardo</button>
+                <button data-person="Rafael">Rafael</button>
+                <button data-person="Fernando">Fernando</button>
+                <button data-person="Samana">Samana</button>
+                <button data-person="Mayara">Mayara</button>
+            </div>
+            <button id="submit-votes">Enviar Meus Votos</button>
+        </section>
+
+        <section id="results-section" style="display: none;">
+            <h2>Resultados da Enquete</h2>
+            <div id="results-container"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Enquete dos Amigos</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
