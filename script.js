@@ -1,11 +1,16 @@
-// Seus detalhes de configuração do Firebase (COLE AQUI o trecho que você pegou no Console do Firebase)
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBee0be89eBluIdAZE-TfBE4IENWlFCZCs",
+  authDomain: "enqueteamigos.firebaseapp.com",
+  projectId: "enqueteamigos",
+  storageBucket: "enqueteamigos.firebasestorage.app",
+  messagingSenderId: "772234216402",
+  appId: "1:772234216402:web:eb1cc498912090903ebe0b"
 };
 
 // Inicialize o Firebase
@@ -22,8 +27,7 @@ const backToPollBtn = document.getElementById('back-to-poll-btn');
 
 // Elementos do alerta personalizado
 const customAlert = document.getElementById('custom-alert');
-// CORRIGIDO: Erro de digitação aqui. Removido 'document ='
-const customAlertMessage = document.getElementById('custom-alert-message');
+const customAlertMessage = document.getElementById('custom-alert-message'); // Corrigido
 const closeAlertButton = customAlert.querySelector('.close-button');
 
 // Variável para armazenar os votos temporariamente antes de enviar.
@@ -33,7 +37,6 @@ let userCurrentVotes = {};
 const people = ["Fernando", "Mayara", "Rafael", "Ricardo", "Samana"];
 
 // Objeto para mapear nomes de pessoas para URLs de imagens
-// Substitua os URLs dos placeholders pelos URLs reais das fotos dos seus amigos!
 const personImages = {
     "Fernando": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Fernando.jpg",
     "Mayara": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Mayara.jpg",
@@ -68,24 +71,18 @@ window.addEventListener('click', (event) => {
 
 // Função para manipular cliques nos botões de voto
 questionsSection.addEventListener('click', (event) => {
-    const clickedButton = event.target.closest('button'); // Garante que pegamos o botão, mesmo se clicarmos na imagem/span
+    const clickedButton = event.target.closest('button');
 
-    // Garante que o clique foi em um botão e dentro de uma seção de opções
     if (clickedButton && clickedButton.closest('.options')) {
         const questionBlock = clickedButton.closest('.question-block');
-        // Pega o texto da pergunta usando o atributo customizado 'data-question'
         const questionText = questionBlock.dataset.question;
         const selectedPerson = clickedButton.dataset.person;
 
-        // Desseleciona OUTROS botões APENAS DESSA PERGUNTA
-        // e garante que apenas um botão por pergunta fique selecionado visualmente
         const buttonsInQuestion = questionBlock.querySelectorAll('.options button');
         buttonsInQuestion.forEach(btn => btn.classList.remove('selected'));
 
-        // Seleciona o botão clicado
         clickedButton.classList.add('selected');
 
-        // Armazena o voto atual do usuário para ESTA pergunta
         userCurrentVotes[questionText] = selectedPerson;
         console.log(`Voto para "${questionText}": ${selectedPerson}`);
     }
@@ -96,22 +93,28 @@ questionsSection.addEventListener('click', (event) => {
 
 // Função para enviar os votos para o Firebase
 submitVotesBtn.addEventListener('click', async () => {
-    // Pega todas as perguntas visíveis na tela
+    console.log('Botão "Enviar Meus Votos" clicado.'); // Mensagem de depuração
     const allQuestionsElements = document.querySelectorAll('.question-block');
     const totalQuestions = allQuestionsElements.length;
+    console.log('Total de perguntas na página:', totalQuestions); // Mensagem de depuração
+    console.log('Número de votos registrados:', Object.keys(userCurrentVotes).length); // Mensagem de depuração
 
     // Verifica se o usuário votou em todas as perguntas
     if (Object.keys(userCurrentVotes).length !== totalQuestions) {
+        console.log('Faltam votos. Exibindo alerta.'); // Mensagem de depuração
         showAlert('Por favor, vote em todas as perguntas antes de enviar!');
         return; // Sai da função se nem todas as perguntas foram respondidas
     }
 
+    console.log('Todas as perguntas foram votadas. Prosseguindo com o envio.'); // Mensagem de depuração
+
     try {
         // Adiciona um novo documento à coleção 'votes'
         await db.collection('votes').add({
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(), // Adiciona um carimbo de data/hora
-            votes: userCurrentVotes // Os votos da sessão atual do usuário
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            votes: userCurrentVotes
         });
+        console.log('Votos enviados com sucesso para o Firebase.'); // Mensagem de depuração
         showAlert('Seus votos foram enviados com sucesso!');
         
         // Limpa os votos atuais do usuário e desmarca as seleções
@@ -125,7 +128,7 @@ submitVotesBtn.addEventListener('click', async () => {
         showResultsBtn.style.display = 'block';
 
     } catch (error) {
-        console.error("Erro ao enviar votos: ", error);
+        console.error("Erro ao enviar votos para o Firebase: ", error); // Mensagem de depuração mais específica
         showAlert('Ocorreu um erro ao enviar seus votos. Tente novamente.');
     }
 });
@@ -140,16 +143,13 @@ async function displayResults() {
         const snapshot = await db.collection('votes').get();
         const allIndividualVotes = [];
         snapshot.forEach(doc => {
-            allIndividualVotes.push(doc.data().votes); // Pega o objeto 'votes' de cada documento
+            allIndividualVotes.push(doc.data().votes);
         });
 
-        // Pega todas as perguntas do HTML para garantir que processamos todas
         const allQuestionsFromHtml = Array.from(document.querySelectorAll('.question-block')).map(div => div.dataset.question);
 
-        // Agrupa os votos por pergunta
         const aggregatedVotes = {};
         allQuestionsFromHtml.forEach(q => {
-            // Inicializa a contagem para cada pessoa para cada pergunta
             aggregatedVotes[q] = {};
             people.forEach(p => {
                 aggregatedVotes[q][p] = 0;
@@ -159,43 +159,36 @@ async function displayResults() {
         allIndividualVotes.forEach(singleUserVotes => {
             for (const question in singleUserVotes) {
                 const votedPerson = singleUserVotes[question];
-                // Incrementa a contagem se a pessoa votada existir para a pergunta
                 if (aggregatedVotes[question] && aggregatedVotes[question][votedPerson] !== undefined) {
                     aggregatedVotes[question][votedPerson]++;
                 }
             }
         });
 
-        // Itera sobre as perguntas para criar e exibir os rankings
         allQuestionsFromHtml.forEach(question => {
             const voteCountsForQuestion = aggregatedVotes[question];
 
-            // Converte para array de objetos para ordenar
             const sortedResults = Object.entries(voteCountsForQuestion)
                 .map(([person, votes]) => ({ person, votes }))
-                .sort((a, b) => b.votes - a.votes); // Ordena do maior para o menor
+                .sort((a, b) => b.votes - a.votes);
 
-            // Gera o HTML para o ranking de uma pergunta específica
             const questionResultsDiv = document.createElement('div');
-            questionResultsDiv.innerHTML = `<h3>${question}</h3>`; // Título da pergunta
+            questionResultsDiv.innerHTML = `<h3>${question}</h3>`;
             
             let currentRank = 1;
-            let lastVotes = -1; // Usado para rastrear empates
-            let peopleAtSameRank = 0; // Conta quantas pessoas estão no rank atual
+            let lastVotes = -1;
+            let peopleAtSameRank = 0;
 
             sortedResults.forEach((item, index) => {
-                // Lógica para lidar com empates e pular posições
                 if (item.votes !== lastVotes) {
-                    currentRank += peopleAtSameRank; // Incrementa o rank pelo número de pessoas no rank anterior
-                    peopleAtSameRank = 1; // Reseta para a pessoa atual
+                    currentRank += peopleAtSameRank;
+                    peopleAtSameRank = 1;
                 } else {
-                    peopleAtSameRank++; // Mais uma pessoa com o mesmo número de votos
+                    peopleAtSameRank++;
                 }
                 lastVotes = item.votes;
 
-                // Adiciona o item ao HTML do ranking com foto, nome e votos
-                // A ordem é: posição, foto, nome, votos
-                const personImgSrc = personImages[item.person] || 'https://placehold.co/40x40/cccccc/000000?text=NA'; // Fallback image
+                const personImgSrc = personImages[item.person] || 'https://placehold.co/40x40/cccccc/000000?text=NA';
                 questionResultsDiv.innerHTML += `
                     <div class="ranking-item">
                         <span class="position">${currentRank}º</span> 
@@ -210,7 +203,6 @@ async function displayResults() {
             resultsContainer.appendChild(questionResultsDiv);
         });
 
-        // Esconde a seção de perguntas e mostra a de resultados
         questionsSection.style.display = 'none';
         resultsSection.style.display = 'block';
 
@@ -223,25 +215,9 @@ async function displayResults() {
 
 // --- Event Listeners para Botões de Navegação ---
 
-// Botão para mostrar os resultados
 showResultsBtn.addEventListener('click', displayResults);
 
-// Botão para voltar para a enquete
 backToPollBtn.addEventListener('click', () => {
     resultsSection.style.display = 'none';
     questionsSection.style.display = 'block';
-    // Se o usuário quiser votar de novo, ele pode. Mas para uma enquete de 5 pessoas,
-    // talvez você queira que cada um vote só uma vez.
-    // Isso exigiria um controle de sessão ou autenticação do Firebase.
 });
-
-// Opcional: Chama displayResults no carregamento para mostrar resultados prévios
-// Isso pode ser útil se você quer que os resultados já apareçam ao carregar a página
-// Se os usuários puderem ver os resultados antes de votar, pode influenciar os votos.
-// Portanto, talvez seja melhor manter essa chamada comentada e usar o botão "Ver Resultados".
-// document.addEventListener('DOMContentLoaded', displayResults);
-
-
-// Opcional: Mostrar os resultados quando a página é carregada (se já houver votos)
-// Mas é melhor deixar para o usuário clicar em "Ver Resultados"
-// document.addEventListener('DOMContentLoaded', displayResults);
