@@ -27,7 +27,7 @@ const closeAlertButton = customAlert.querySelector('.close-button');
 
 // Variável para armazenar os votos temporariamente antes de enviar.
 let userCurrentVotes = {};
-const people = ["Fernando", "Mayara", "Rafael", "Ricardo", "Smara"];
+const people = ["Fernando", "Mayara", "Rafael", "Ricardo", "Samara"];
 
 // Objeto para mapear nomes de pessoas para URLs de imagens
 const personImages = {
@@ -35,7 +35,7 @@ const personImages = {
     "Mayara": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Mayara.jpg",
     "Rafael": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Rafael.jpg",
     "Ricardo": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Ricardo.jpg",
-    "Smara": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Smara.jpg"
+    "Samara": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Samara.jpg"
 };
 
 // --- Funções de UI ---
