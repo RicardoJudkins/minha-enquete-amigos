@@ -1,16 +1,11 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
+// Seus detalhes de configuração do Firebase (COLADOS AQUI os valores reais do seu Console do Firebase)
 const firebaseConfig = {
-  apiKey: "AIzaSyBee0be89eBluIdAZE-TfBE4IENWlFCZCs",
-  authDomain: "enqueteamigos.firebaseapp.com",
-  projectId: "enqueteamigos",
-  storageBucket: "enqueteamigos.firebasestorage.app",
-  messagingSenderId: "772234216402",
-  appId: "1:772234216402:web:eb1cc498912090903ebe0b"
+    apiKey: "AIzaSyBee0be89eBluIdAZE-TfBE4IENWlFCZCs",
+    authDomain: "enqueteamigos.firebaseapp.com",
+    projectId: "enqueteamigos",
+    storageBucket: "enqueteamigos.firebasestorage.app",
+    messagingSenderId: "772234216402",
+    appId: "1:772234216402:web:eb1cc498912090903ebe0b"
 };
 
 // Inicialize o Firebase
@@ -27,13 +22,11 @@ const backToPollBtn = document.getElementById('back-to-poll-btn');
 
 // Elementos do alerta personalizado
 const customAlert = document.getElementById('custom-alert');
-const customAlertMessage = document.getElementById('custom-alert-message'); // Corrigido
+const customAlertMessage = document.getElementById('custom-alert-message');
 const closeAlertButton = customAlert.querySelector('.close-button');
 
 // Variável para armazenar os votos temporariamente antes de enviar.
-// A chave será o texto da pergunta, e o valor será o nome da pessoa votada.
 let userCurrentVotes = {};
-// Array de todas as pessoas votáveis (em ordem alfabética)
 const people = ["Fernando", "Mayara", "Rafael", "Ricardo", "Samana"];
 
 // Objeto para mapear nomes de pessoas para URLs de imagens
@@ -45,101 +38,118 @@ const personImages = {
     "Samana": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Samana.jpg"
 };
 
-
 // --- Funções de UI ---
 
-// Função para exibir o alerta personalizado
 function showAlert(message) {
     customAlertMessage.textContent = message;
-    customAlert.style.display = 'flex'; // Use flex para centralizar
+    customAlert.style.display = 'flex';
 }
 
-// Função para esconder o alerta personalizado
 function hideAlert() {
     customAlert.style.display = 'none';
 }
 
-// Event listener para fechar o alerta
 closeAlertButton.addEventListener('click', hideAlert);
-// Clicar fora do conteúdo do alerta também fecha
 window.addEventListener('click', (event) => {
     if (event.target === customAlert) {
         hideAlert();
     }
 });
 
+// Verificação inicial se a seção de perguntas foi encontrada
+if (questionsSection) {
+    console.log('questionsSection encontrado. Adicionando event listener de clique.');
+    questionsSection.addEventListener('click', (event) => {
+        console.log('Clique detectado na questionsSection.');
+        const clickedButton = event.target.closest('button');
 
-// Função para manipular cliques nos botões de voto
-questionsSection.addEventListener('click', (event) => {
-    const clickedButton = event.target.closest('button');
+        if (clickedButton && clickedButton.closest('.options')) {
+            console.log('Botão de opção clicado:', clickedButton.dataset.person);
+            const questionBlock = clickedButton.closest('.question-block');
+            const questionText = questionBlock.dataset.question;
+            const selectedPerson = clickedButton.dataset.person;
 
-    if (clickedButton && clickedButton.closest('.options')) {
-        const questionBlock = clickedButton.closest('.question-block');
-        const questionText = questionBlock.dataset.question;
-        const selectedPerson = clickedButton.dataset.person;
+            const buttonsInQuestion = questionBlock.querySelectorAll('.options button');
+            buttonsInQuestion.forEach(btn => btn.classList.remove('selected'));
 
-        const buttonsInQuestion = questionBlock.querySelectorAll('.options button');
-        buttonsInQuestion.forEach(btn => btn.classList.remove('selected'));
+            clickedButton.classList.add('selected');
 
-        clickedButton.classList.add('selected');
-
-        userCurrentVotes[questionText] = selectedPerson;
-        console.log(`Voto para "${questionText}": ${selectedPerson}`);
-    }
-});
+            userCurrentVotes[questionText] = selectedPerson;
+            console.log(`Voto para "${questionText}": ${selectedPerson}`);
+        } else {
+            console.log('Clique não foi em um botão de opção válido.');
+        }
+    });
+} else {
+    console.error('Erro: questionsSection não foi encontrado no DOM.');
+}
 
 
 // --- Funções de Interação com Firebase ---
 
-// Função para enviar os votos para o Firebase
-submitVotesBtn.addEventListener('click', async () => {
-    console.log('Botão "Enviar Meus Votos" clicado.'); // Mensagem de depuração
-    const allQuestionsElements = document.querySelectorAll('.question-block');
-    const totalQuestions = allQuestionsElements.length;
-    console.log('Total de perguntas na página:', totalQuestions); // Mensagem de depuração
-    console.log('Número de votos registrados:', Object.keys(userCurrentVotes).length); // Mensagem de depuração
+if (submitVotesBtn) {
+    console.log('submitVotesBtn encontrado. Adicionando event listener de clique.');
+    submitVotesBtn.addEventListener('click', async () => {
+        console.log('Botão "Enviar Meus Votos" clicado.');
+        const allQuestionsElements = document.querySelectorAll('.question-block');
+        const totalQuestions = allQuestionsElements.length;
+        console.log('Total de perguntas na página:', totalQuestions);
+        console.log('Número de votos registrados:', Object.keys(userCurrentVotes).length);
 
-    // Verifica se o usuário votou em todas as perguntas
-    if (Object.keys(userCurrentVotes).length !== totalQuestions) {
-        console.log('Faltam votos. Exibindo alerta.'); // Mensagem de depuração
-        showAlert('Por favor, vote em todas as perguntas antes de enviar!');
-        return; // Sai da função se nem todas as perguntas foram respondidas
-    }
+        if (Object.keys(userCurrentVotes).length !== totalQuestions) {
+            console.log('Faltam votos. Exibindo alerta.');
+            showAlert('Por favor, vote em todas as perguntas antes de enviar!');
+            return;
+        }
 
-    console.log('Todas as perguntas foram votadas. Prosseguindo com o envio.'); // Mensagem de depuração
+        console.log('Todas as perguntas foram votadas. Prosseguindo com o envio.');
 
-    try {
-        // Adiciona um novo documento à coleção 'votes'
-        await db.collection('votes').add({
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            votes: userCurrentVotes
-        });
-        console.log('Votos enviados com sucesso para o Firebase.'); // Mensagem de depuração
-        showAlert('Seus votos foram enviados com sucesso!');
-        
-        // Limpa os votos atuais do usuário e desmarca as seleções
-        userCurrentVotes = {};
-        document.querySelectorAll('.options button').forEach(btn => {
-            btn.classList.remove('selected');
-        });
+        try {
+            await db.collection('votes').add({
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                votes: userCurrentVotes
+            });
+            console.log('Votos enviados com sucesso para o Firebase.');
+            showAlert('Seus votos foram enviados com sucesso!');
+            
+            userCurrentVotes = {};
+            document.querySelectorAll('.options button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
 
-        // Mostra o botão "Ver Resultados" e esconde o "Enviar Meus Votos"
-        submitVotesBtn.style.display = 'none';
-        showResultsBtn.style.display = 'block';
+            submitVotesBtn.style.display = 'none';
+            showResultsBtn.style.display = 'block';
 
-    } catch (error) {
-        console.error("Erro ao enviar votos para o Firebase: ", error); // Mensagem de depuração mais específica
-        showAlert('Ocorreu um erro ao enviar seus votos. Tente novamente.');
-    }
-});
+        } catch (error) {
+            console.error("Erro ao enviar votos para o Firebase: ", error);
+            showAlert('Ocorreu um erro ao enviar seus votos. Tente novamente.');
+        }
+    });
+} else {
+    console.error('Erro: submitVotesBtn não foi encontrado no DOM.');
+}
 
 
-// Função para obter e exibir os resultados
+if (showResultsBtn) {
+    showResultsBtn.addEventListener('click', displayResults);
+} else {
+    console.error('Erro: showResultsBtn não foi encontrado no DOM.');
+}
+
+if (backToPollBtn) {
+    backToPollBtn.addEventListener('click', () => {
+        resultsSection.style.display = 'none';
+        questionsSection.style.display = 'block';
+    });
+} else {
+    console.error('Erro: backToPollBtn não foi encontrado no DOM.');
+}
+
+
 async function displayResults() {
-    resultsContainer.innerHTML = ''; // Limpa resultados anteriores
+    resultsContainer.innerHTML = '';
 
     try {
-        // Pega todos os documentos da coleção 'votes'
         const snapshot = await db.collection('votes').get();
         const allIndividualVotes = [];
         snapshot.forEach(doc => {
@@ -211,13 +221,3 @@ async function displayResults() {
         showAlert('Ocorreu um erro ao carregar os resultados.');
     }
 }
-
-
-// --- Event Listeners para Botões de Navegação ---
-
-showResultsBtn.addEventListener('click', displayResults);
-
-backToPollBtn.addEventListener('click', () => {
-    resultsSection.style.display = 'none';
-    questionsSection.style.display = 'block';
-});
