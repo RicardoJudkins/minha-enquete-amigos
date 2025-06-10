@@ -1,96 +1,318 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
+    font-family: 'Inter', sans-serif; /* Usando Inter, como recomendado */
+    margin: 0; /* Remove margem padrão do body */
     background-color: #f4f4f4;
     color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Garante que o footer fique na parte inferior */
 }
 
 header {
     text-align: center;
     margin-bottom: 30px;
+    padding: 20px;
+    background-color: #007bff;
+    color: white;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+h1 {
+    margin: 0;
 }
 
 main {
-    max-width: 800px;
-    margin: 0 auto;
+    width: 90%; /* Agora ocupa 90% da largura disponível */
+    max-width: 1600px; /* Aumentado o max-width para telas maiores */
+    margin: 20px auto; /* Adicionado margem superior e inferior */
     background-color: #fff;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 12px; /* Aumentado o arredondamento */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra mais suave */
+    flex-grow: 1; /* Permite que o main cresça para empurrar o footer */
 }
 
 section {
-    margin-bottom: 20px;
+    margin-bottom: 30px; /* Mais espaço entre as seções */
 }
 
 h2 {
     color: #0056b3;
-    margin-bottom: 15px;
+    margin-bottom: 20px; /* Mais espaço abaixo dos títulos de pergunta */
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.question-block {
+    margin-bottom: 25px; /* Espaço entre blocos de perguntas */
+}
+
+.options {
+    display: flex;
+    flex-wrap: wrap; /* Quebra linha se não houver espaço */
+    gap: 10px; /* Espaço entre os botões */
+    justify-content: center; /* Centraliza os botões */
 }
 
 .options button {
     background-color: #007bff;
     color: white;
-    padding: 10px 15px;
-    margin: 5px;
+    padding: 12px 20px; /* Aumentado padding para botões maiores */
     border: none;
-    border-radius: 5px;
+    border-radius: 8px; /* Aumentado o arredondamento */
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Adicionado transform para efeito de clique */
+    flex-grow: 1; /* Permite que botões cresçam */
+    max-width: 180px; /* Aumentado para acomodar imagem e texto */
+    display: flex; /* Para alinhar imagem e texto no botão */
+    align-items: center; /* Alinha verticalmente no centro */
+    justify-content: center; /* Centraliza conteúdo horizontalmente */
+    gap: 8px; /* Espaço entre a imagem e o nome */
 }
 
 .options button:hover {
     background-color: #0056b3;
+    transform: translateY(-2px); /* Pequeno efeito de levantamento */
+}
+
+.options button:active {
+    transform: translateY(0); /* Efeito de "pressionar" */
 }
 
 .options button.selected {
     background-color: #28a745; /* Cor para opção selecionada */
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.5); /* Sombra para selecionado */
 }
 
-#submit-votes {
+.person-img {
+    width: 32px; /* Tamanho da miniatura da foto no botão */
+    height: 32px;
+    border-radius: 50%; /* Faz a imagem redonda */
+    object-fit: cover; /* Garante que a imagem cubra o espaço sem distorção */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Pequena borda branca */
+}
+
+.person-name {
+    white-space: nowrap; /* Evita que o nome quebre a linha dentro do botão */
+}
+
+
+#submit-votes, #back-to-poll-btn { /* Removido #show-results-btn daqui */
     display: block;
     width: 100%;
     padding: 15px;
     background-color: #28a745;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     font-size: 18px;
     cursor: pointer;
     margin-top: 30px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-#submit-votes:hover {
+#submit-votes:hover, #back-to-poll-btn:hover {
     background-color: #218838;
+    transform: translateY(-2px);
 }
 
-#results-container div {
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #e9ecef;
+#submit-votes:active, #back-to-poll-btn:active {
+    transform: translateY(0);
 }
+
+/* Estilos específicos para o botão "Ver Resultados" (amarelo) */
+#show-results-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: #FFCD00; /* Amarelo da bandeira do Brasil */
+    color: #333; /* Texto escuro para melhor contraste */
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 30px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#show-results-btn:hover {
+    background-color: #DAA520; /* Amarelo um pouco mais escuro ao passar o mouse */
+    transform: translateY(-2px);
+}
+
+#show-results-btn:active {
+    transform: translateY(0);
+}
+
+/* Estilos para o contêiner de resultados para exibir em colunas */
+#results-container {
+    display: grid;
+    /* Define 3 colunas de largura flexível, mas com um mínimo de 280px por coluna.
+       Em telas menores, ele se adaptará para menos colunas automaticamente. */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px; /* Espaço entre os blocos de resultados */
+    padding: 10px; /* Um pequeno padding interno */
+}
+
+#results-container > div { /* Cada div de resultado de pergunta */
+    margin-bottom: 0; /* Remove a margem vertical que antes separava os blocos */
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #e9ecef;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); /* Sombra interna */
+}
+
+#results-container > div h3 {
+    margin-top: 0; /* Remove margem superior do título da pergunta dentro do bloco de resultado */
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+}
+
 
 .ranking-item {
     display: flex;
-    justify-content: space-between;
-    padding: 5px 0;
+    align-items: center; /* Alinha verticalmente */
+    padding: 8px 0;
+    border-bottom: 1px dashed #ccc; /* Linha tracejada */
+}
+
+.ranking-item:last-child {
+    border-bottom: none; /* Remove a linha do último item */
 }
 
 .ranking-item .position {
     font-weight: bold;
-    margin-right: 10px;
+    margin-right: 15px;
+    background-color: #ffc107; /* Cor de destaque para posição */
+    color: #333;
+    padding: 4px 8px;
+    border-radius: 5px;
+    min-width: 30px; /* Garante largura mínima para posição */
+    text-align: center;
 }
+
+/* Estilo para a imagem no ranking */
+.ranking-item .person-img-results {
+    width: 40px; /* Tamanho da miniatura da foto no resultado */
+    height: 40px;
+    border-radius: 50%; /* Faz a imagem redonda */
+    object-fit: cover;
+    margin-right: 10px; /* Espaço entre a foto e o nome */
+    border: 2px solid #007bff; /* Borda colorida */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Sombra leve */
+}
+
+.ranking-item .person-name-and-votes { /* Contêiner para nome e votos */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Permite que o nome e votos ocupem o espaço restante */
+}
+
+.ranking-item .person-name { /* Nome da pessoa no ranking */
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+}
+
 
 .ranking-item .votes {
     font-style: italic;
     color: #666;
+    font-size: 0.9em;
 }
 
 footer {
     text-align: center;
-    margin-top: 40px;
-    color: #666;
+    margin-top: auto; /* Empurra o footer para a parte inferior */
+    padding: 20px;
+    background-color: #333;
+    color: #ccc;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+/* Responsividade */
+@media (max-width: 900px) { /* Em telas médias, pode cair para 2 colunas */
+    #results-container {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 600px) { /* Em telas pequenas, volta para 1 coluna */
+    main {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    .options button {
+        width: 100%; /* Botões ocupam a largura total em telas menores */
+        max-width: none;
+        flex-direction: row; /* Volta a ser row em telas pequenas se for o caso */
+    }
+
+    .person-img { /* Ajuste para imagem em botões menores */
+        width: 28px;
+        height: 28px;
+    }
+
+    #results-container {
+        grid-template-columns: 1fr; /* Uma única coluna */
+        gap: 20px;
+    }
+}
+
+/* Custom Alert/Message Box Styles */
+.custom-modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 400px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+    text-align: center;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#custom-alert-message {
+    margin-top: 20px;
+    font-size: 1.1em;
 }
