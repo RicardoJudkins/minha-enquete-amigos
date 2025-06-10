@@ -27,15 +27,17 @@ const closeAlertButton = customAlert.querySelector('.close-button');
 
 // Variável para armazenar os votos temporariamente antes de enviar.
 let userCurrentVotes = {};
-const people = ["Fernando", "Mayara", "Rafael", "Ricardo", "Samara"];
+// Array de todas as pessoas votáveis (em ordem alfabética)
+// 'Samara' corrigido aqui
+const people = ["Fernando", "Mayara", "Rafael", "Ricardo", "Samara"]; 
 
 // Objeto para mapear nomes de pessoas para URLs de imagens
 const personImages = {
     "Fernando": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Fernando.jpg",
     "Mayara": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Mayara.jpg",
-    "Rafael": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Rafael.jpg",
-    "Ricardo": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Ricardo.jpg",
-    "Samara": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Samara.jpg"
+    "Rafael": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Rafael.jpg", // Certifique-se que o arquivo existe com esse nome
+    "Ricardo": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Ricardo.jpg", // Certifique-se que o arquivo existe com esse nome
+    "Samara": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Samara.jpg" // URL ajustado para Samara.jpg, certifique-se que o arquivo existe com esse nome
 };
 
 // --- Funções de UI ---
@@ -56,15 +58,35 @@ window.addEventListener('click', (event) => {
     }
 });
 
-// Verificação inicial se a seção de perguntas foi encontrada
+// Função para exibir a seção de resultados e esconder a de perguntas
+async function showResults() {
+    console.log('Exibindo resultados.');
+    questionsSection.style.display = 'none';
+    resultsSection.style.display = 'block';
+    localStorage.setItem('enqueteState', 'results'); // Salva o estado no localStorage
+    await displayResults(); // Carrega e exibe os resultados
+}
+
+// Função para exibir a seção de perguntas e esconder a de resultados
+function showQuestions() {
+    console.log('Exibindo perguntas.');
+    resultsSection.style.display = 'none';
+    questionsSection.style.display = 'block';
+    localStorage.setItem('enqueteState', 'questions'); // Salva o estado no localStorage
+    // Opcional: limpa as seleções atuais se o usuário voltar para votar novamente
+    document.querySelectorAll('.options button').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    userCurrentVotes = {}; // Limpa os votos temporários
+}
+
+
+// Event listener para manipular cliques nos botões de voto
 if (questionsSection) {
-    console.log('questionsSection encontrado. Adicionando event listener de clique.');
     questionsSection.addEventListener('click', (event) => {
-        console.log('Clique detectado na questionsSection.');
         const clickedButton = event.target.closest('button');
 
         if (clickedButton && clickedButton.closest('.options')) {
-            console.log('Botão de opção clicado:', clickedButton.dataset.person);
             const questionBlock = clickedButton.closest('.question-block');
             const questionText = questionBlock.dataset.question;
             const selectedPerson = clickedButton.dataset.person;
@@ -76,8 +98,6 @@ if (questionsSection) {
 
             userCurrentVotes[questionText] = selectedPerson;
             console.log(`Voto para "${questionText}": ${selectedPerson}`);
-        } else {
-            console.log('Clique não foi em um botão de opção válido.');
         }
     });
 } else {
@@ -88,7 +108,6 @@ if (questionsSection) {
 // --- Funções de Interação com Firebase ---
 
 if (submitVotesBtn) {
-    console.log('submitVotesBtn encontrado. Adicionando event listener de clique.');
     submitVotesBtn.addEventListener('click', async () => {
         console.log('Botão "Enviar Meus Votos" clicado.');
         const allQuestionsElements = document.querySelectorAll('.question-block');
@@ -97,7 +116,6 @@ if (submitVotesBtn) {
         console.log('Número de votos registrados:', Object.keys(userCurrentVotes).length);
 
         if (Object.keys(userCurrentVotes).length !== totalQuestions) {
-            console.log('Faltam votos. Exibindo alerta.');
             showAlert('Por favor, vote em todas as perguntas antes de enviar!');
             return;
         }
@@ -112,13 +130,8 @@ if (submitVotesBtn) {
             console.log('Votos enviados com sucesso para o Firebase.');
             showAlert('Seus votos foram enviados com sucesso!');
             
-            userCurrentVotes = {};
-            document.querySelectorAll('.options button').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-
-            submitVotesBtn.style.display = 'none';
-            showResultsBtn.style.display = 'block';
+            // Após enviar, vai para a tela de resultados e salva o estado
+            showResults(); 
 
         } catch (error) {
             console.error("Erro ao enviar votos para o Firebase: ", error);
@@ -129,23 +142,22 @@ if (submitVotesBtn) {
     console.error('Erro: submitVotesBtn não foi encontrado no DOM.');
 }
 
-
+// Botão "Ver Resultados" (agora sempre visível)
 if (showResultsBtn) {
-    showResultsBtn.addEventListener('click', displayResults);
+    showResultsBtn.addEventListener('click', showResults); // Chama a função showResults
 } else {
     console.error('Erro: showResultsBtn não foi encontrado no DOM.');
 }
 
+// Botão "Responder Outra Vez" (substitui "Voltar para a Enquete")
 if (backToPollBtn) {
-    backToPollBtn.addEventListener('click', () => {
-        resultsSection.style.display = 'none';
-        questionsSection.style.display = 'block';
-    });
+    backToPollBtn.addEventListener('click', showQuestions); // Chama a função showQuestions
 } else {
     console.error('Erro: backToPollBtn não foi encontrado no DOM.');
 }
 
 
+// Função para obter e exibir os resultados
 async function displayResults() {
     resultsContainer.innerHTML = '';
 
@@ -187,14 +199,14 @@ async function displayResults() {
             
             let currentRank = 1;
             let lastVotes = -1;
-            let peopleAtSmeRank = 0;
+            let peopleAtSameRank = 0;
 
             sortedResults.forEach((item, index) => {
                 if (item.votes !== lastVotes) {
-                    currentRank += peopleAtSmeRank;
-                    peopleAtSmeRank = 1;
+                    currentRank += peopleAtSameRank;
+                    peopleAtSameRank = 1;
                 } else {
-                    peopleAtSmeRank++;
+                    peopleAtSameRank++;
                 }
                 lastVotes = item.votes;
 
@@ -213,11 +225,18 @@ async function displayResults() {
             resultsContainer.appendChild(questionResultsDiv);
         });
 
-        questionsSection.style.display = 'none';
-        resultsSection.style.display = 'block';
-
     } catch (error) {
         console.error("Erro ao carregar resultados: ", error);
         showAlert('Ocorreu um erro ao carregar os resultados.');
     }
 }
+
+// Verifica o localStorage ao carregar a página e decide qual seção mostrar
+document.addEventListener('DOMContentLoaded', () => {
+    const savedState = localStorage.getItem('enqueteState');
+    if (savedState === 'results') {
+        showResults(); // Se o estado salvo é resultados, exibe os resultados
+    } else {
+        showQuestions(); // Caso contrário, exibe as perguntas
+    }
+});
