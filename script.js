@@ -27,7 +27,7 @@ const closeAlertButton = customAlert.querySelector('.close-button');
 
 // Variável para armazenar os votos temporariamente antes de enviar.
 let userCurrentVotes = {};
-const people = ["Fernando", "Mayara", "Rafael", "Ricardo", "Samara"];
+const people = ["Fernando", "Mayara", "Rafael", "Ricardo", "Smara"];
 
 // Objeto para mapear nomes de pessoas para URLs de imagens
 const personImages = {
@@ -35,7 +35,7 @@ const personImages = {
     "Mayara": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Mayara.jpg",
     "Rafael": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Rafael.jpg",
     "Ricardo": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Ricardo.jpg",
-    "Samara": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Samara.jpg"
+    "Smara": "https://raw.githubusercontent.com/RicardoJudkins/minha-enquete-amigos/main/images/Smara.jpg"
 };
 
 // --- Funções de UI ---
@@ -187,14 +187,14 @@ async function displayResults() {
             
             let currentRank = 1;
             let lastVotes = -1;
-            let peopleAtSameRank = 0;
+            let peopleAtSmeRank = 0;
 
             sortedResults.forEach((item, index) => {
                 if (item.votes !== lastVotes) {
-                    currentRank += peopleAtSameRank;
-                    peopleAtSameRank = 1;
+                    currentRank += peopleAtSmeRank;
+                    peopleAtSmeRank = 1;
                 } else {
-                    peopleAtSameRank++;
+                    peopleAtSmeRank++;
                 }
                 lastVotes = item.votes;
 
